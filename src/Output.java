@@ -6,7 +6,7 @@ public class Output {
 	private int length;
 	private char[] data;
 	private int fitness = -1;
-	private int generation;
+	private int generation_num;
 	
 	public Output(int length, int generation) {
 		this.length = length;
@@ -16,15 +16,15 @@ public class Output {
 	public Output(char[] data, int generation) {
 		this.length = data.length;
 		this.data = data;
-		this.generation = generation;
+		this.generation_num = generation;
 	}
 	
 	public int size() {
 		return this.length;
 	}
 	
-	public int getGeneration() {
-		return generation;
+	public int getGenerationNum() {
+		return generation_num;
 	}
 	
 	public void setValue(int index, char value) {
@@ -68,8 +68,8 @@ public class Output {
 		return new String(data);
 	}
 	
-	public Output clone() {
-		return new Output(this.data, this.generation + 1);
+	public Output createChild() {
+		return new Output(this.data, this.generation_num + 1);
 	}
 	
 	public boolean equals(Object other) {

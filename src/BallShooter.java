@@ -13,16 +13,16 @@ import javax.swing.JPanel;
 
 public class BallShooter {
 	
-	public static final int WIDTH = 1500;
-	public static final int HEIGHT = 600;
+	public static final int WIDTH = 1280;
+	public static final int HEIGHT = 480;
 	
 	public static final boolean TERMINATE_ON_OPTIMAL = false;
-	public static final boolean BEST_PERSISTS = false;
+	public static final boolean BEST_PERSISTS = true;
 	
-	public static final int MAX_BALLS = 5;
-	public static final int MIN_BALLS = 5;
+	public static final int MAX_BALLS = 6;
+	public static final int MIN_BALLS = 6;
 	
-	public static final int GENERATION_SIZE = 300;
+	public static final int GENERATION_SIZE = 200;
 	public static final int OUTPUT_LENGTH = 46;
 	
 	public static final float BALL_DAMPENING = 0.1f;
@@ -33,16 +33,17 @@ public class BallShooter {
 	public static final int BALL_VALUE = 200;
 	public static final int BALL_TOUCH_BONUS = 400;
 	
-	public static final double MUTATION_CHANCE = 0.05;
-	public static final double CROSSOVER_CHANCE = .7;
+	public static final double MUTATION_CHANCE = 0.15;
+	public static final double CROSSOVER_CHANCE = .4;
 	
 	public static final Ball ball = new Ball(15,300,10);
 	public static final Level level = new Level();
 	public static final int target = (int)(Math.random() * (WIDTH - 100) + 50);
-	public static final long DELAY_MILLIS = 5;
+	public static final long DELAY_MILLIS = 4;
 	public static final int DELAY_NANO = 0;
 	public static final int TIME_LIMIT = 50;
 	public static final float TICK_TIME = 0.01f;
+	public static final float GRAVITY = 400;
 	
 	public static final boolean use_landing_target = false;
 	
@@ -69,11 +70,12 @@ public class BallShooter {
 			
 		Alphabet nums = Alphabet.getBits();
 		//OutputMerger merger = new OutputMultiCrosser(nums, 10);
-		OutputMerger merger = new OutputBlender(nums);
+		OutputMerger merger = new OutputMultiCrosser(nums, 10);
 		Displayer displayer = getDisplayer();
+		OutputPairChooser chooser = OutputPairChooser.getNormalDistChooser(0.25);
 		merger.setMutationChance(MUTATION_CHANCE);
 		merger.setSwitchChance(CROSSOVER_CHANCE);
-		Simulation simul = new Simulation(getFitnessFunction(), nums, merger, displayer, GENERATION_SIZE, OUTPUT_LENGTH);
+		Simulation simul = new Simulation(getFitnessFunction(), nums, chooser, merger, displayer, GENERATION_SIZE, OUTPUT_LENGTH);
 		if(TERMINATE_ON_OPTIMAL) {
 			int max_fitness = level.numBalls() * BALL_VALUE;
 			simul.setStoppingFitness(max_fitness);
@@ -291,7 +293,7 @@ public class BallShooter {
 		public float vx;
 		public float vy;
 		
-		public float ay = 500;
+		public float ay = GRAVITY;
 		
 		public Float distance;
 		

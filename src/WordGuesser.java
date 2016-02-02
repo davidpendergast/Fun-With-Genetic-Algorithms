@@ -15,7 +15,7 @@ public class WordGuesser {
 		OutputMerger merger = new OutputMultiCrosser(alphabet, 5);
 		merger.setMutationChance(0.001);
 		merger.setSwitchChance(.7);
-		
+		OutputPairChooser chooser = OutputPairChooser.getNormalDistChooser(0.5);
 		boolean isFinished = false;
 		int gen_num = 1;
 		while(!isFinished) {
@@ -28,7 +28,7 @@ public class WordGuesser {
 			}
 			gen_num++;
 			
-			current_gen = current_gen.getNextGeneration(merger);
+			current_gen = current_gen.getNextGeneration(chooser,merger);
 			
 			try {
 				Thread.sleep(10);

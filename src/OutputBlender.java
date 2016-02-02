@@ -5,13 +5,18 @@ public class OutputBlender extends OutputMerger {
 		super(alphabet);
 	}
 
+	/**
+	 * input: AAAAAAAAAAAAAAAAA BBBBBBBBBBBBBBBBB
+	 * <p>
+	 * output: ABABBABAAABBABABA BABAABABBBAABABAB
+	 */
 	@Override
 	public Output[] getChildren(Output o1, Output o2) {
 		
 		int length = o1.size();
 		
-		Output res1 = new Output(length, o1.getGeneration()+1);
-		Output res2 = new Output(length, o1.getGeneration()+1);
+		Output res1 = new Output(length, o1.getGenerationNum()+1);
+		Output res2 = new Output(length, o1.getGenerationNum()+1);
 		for(int i = 0; i < length; i++) {
 			if(random.nextBoolean()) {
 				res1.setValue(i, o1.getValue(i));

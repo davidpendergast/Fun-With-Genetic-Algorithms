@@ -10,10 +10,34 @@ import java.util.Set;
 public class Alphabet {
 	
 	private char[] chars;
+	private int[] weights;
+	private int total_weight = 0;
 	private Random random = new Random();
 	
 	public Alphabet(char ... chars) {
 		this.chars = chars;
+		this.weights = null;
+	}
+	
+	public void setWeights(int...weights) {
+		if(weights == null) {
+			this.weights = null;
+			this.total_weight = 0;
+			return;
+		}
+		
+		if(weights.length != chars.length) {
+			this.weights = Arrays.copyOf(weights, chars.length);
+		} else {
+			this.weights = weights;
+		}
+		
+		int sum = 0;
+		for(int i = 0; i < weights.length; i++) {
+			sum += this.weights[i];
+			this.weights[i] = sum;
+		}
+		total_weight = sum; 
 	}
 	
 	public Alphabet(List<Character> chars) {
@@ -27,8 +51,24 @@ public class Alphabet {
 		return Arrays.copyOf(chars, chars.length);
 	}
 	
+	/**
+	 * Returns a random char from the alphabet.  If setWeights was called with a non-null
+	 * array of weight values, the chars returned by this function will follow that distribution.
+	 * Otherwise all chars have an equal chance of being returned.
+	 */
 	public char getRandomChar() {
-		return chars[random.nextInt(chars.length)];
+		if(weights == null) {
+			return chars[random.nextInt(chars.length)];
+		} else {
+			int val = random.nextInt(total_weight);
+			for(int i = 0; i < weights.length; i++) {
+				if(val <= weights[i]) {
+					return chars[i];
+				}
+			}
+			
+			return chars[0];
+		}
 	}	
 	
 	public static Alphabet getLowerCaseLetters() {

@@ -22,15 +22,15 @@ public abstract class OutputMerger {
 	
 	public Output[] merge(Output o1, Output o2) {
 		assert o1.size() == o2.size();
-		assert o1.getGeneration() == o2.getGeneration();
+		assert o1.getGenerationNum() == o2.getGenerationNum();
 		
 		Output[] kids;
 		if(random.nextDouble() <= switch_chance) {
 			kids = getChildren(o1, o2);
 		} else {
 			kids = new Output[2];
-			kids[0] = o1.clone();
-			kids[1] = o2.clone();
+			kids[0] = o1.createChild();
+			kids[1] = o2.createChild();
 		}
 		
 		if(random.nextDouble() <= mutation_chance) {

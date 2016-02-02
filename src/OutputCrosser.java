@@ -12,8 +12,8 @@ public class OutputCrosser extends OutputMerger {
 	 */
 	public Output[] getChildren(Output o1, Output o2) {
 		int length = Math.min(o1.size(), o2.size());
-		Output res1 = new Output(length, o1.getGeneration()+1);
-		Output res2 = new Output(length, o1.getGeneration()+1);
+		Output res1 = new Output(length, o1.getGenerationNum()+1);
+		Output res2 = new Output(length, o1.getGenerationNum()+1);
 		
 		int cross_at =  random.nextInt(length);
 		

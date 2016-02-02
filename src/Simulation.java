@@ -3,6 +3,7 @@ public class Simulation {
 	public FitnessFunction function;
 	public Alphabet alphabet;
 	public OutputMerger merger;
+	public OutputPairChooser chooser;
 	public int generation_size;
 	public int output_length;
 	
@@ -12,12 +13,13 @@ public class Simulation {
 	
 	public Displayer displayer;
 	
-	public Simulation(FitnessFunction function, Alphabet alphabet, OutputMerger merger, Displayer displayer, int generation_size, int output_length) {
+	public Simulation(FitnessFunction function, Alphabet alphabet, OutputPairChooser chooser, OutputMerger merger, Displayer displayer, int generation_size, int output_length) {
 		this.function = function;
 		this.alphabet = alphabet;
 		this.generation_size = generation_size;
 		this.output_length = output_length;
 		this.merger = merger;
+		this.chooser = chooser;
 		this.displayer = displayer;
 	}
 	
@@ -48,9 +50,6 @@ public class Simulation {
 			} else {
 				System.out.println(best);
 			}
-			System.out.println(current_gen.getFitnesses());
-			//System.out.println(current_gen.fitnessSums);
-			System.out.println(current_gen.total_sum);
 			
 			displayer.display(best);
 			if(stopping_fitness != -1 && best.getFitness() >= stopping_fitness) {
@@ -59,7 +58,7 @@ public class Simulation {
 			}
 			gen_num++;
 			
-			current_gen = current_gen.getNextGeneration(merger, best_persists);
+			current_gen = current_gen.getNextGeneration(chooser, merger, best_persists);
 			
 			try {
 				Thread.sleep(10);

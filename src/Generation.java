@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Generation implements Iterable<Output> {
 	private List<Output> outputs;
-	private List<Long> fitnessSums;	//TODO not public
+	private List<Long> fitnessSums;
 	public long total_sum = 0;
 	private Random random = new Random();
 	private boolean isSorted = false;
@@ -31,6 +31,18 @@ public class Generation implements Iterable<Output> {
 	
 	public void add(Output output) {
 		outputs.add(output);
+	}
+	
+	public Output get(int i) {
+		return outputs.get(i);
+	}
+	
+	public int size() {
+		return outputs.size();
+	}
+	
+	public boolean isCalculatedAndSorted() {
+		return isSorted;
 	}
 	
 	public void calculateFitnesses(FitnessFunction function) {
@@ -88,10 +100,11 @@ public class Generation implements Iterable<Output> {
 		return outputs.iterator();
 	}
 	
-	public Generation getNextGeneration(OutputMerger merger) {
-		return getNextGeneration(merger, false);
+	public Generation getNextGeneration(OutputPairChooser chooser, OutputMerger merger) {
+		return getNextGeneration(chooser, merger, false);
 	}
-	public Generation getNextGeneration(OutputMerger merger, boolean best_persists) {
+	
+	public Generation getNextGeneration(OutputPairChooser chooser, OutputMerger merger, boolean best_persists) {
 		if(!isSorted) {
 			throw new RuntimeException("Fitnesses must be calculated before the next generation can be produced.");
 		}
@@ -99,14 +112,16 @@ public class Generation implements Iterable<Output> {
 		int size = outputs.size();
 		
 		for(int i = 0; i < size/2; i++) {
-			long rand1 = Math.abs(random.nextLong()) % total_sum;
-			long rand2 = Math.abs(random.nextLong()) % total_sum;
-			int rand_idx_1 = indexBehind(rand1);
-			int rand_idx_2 = indexBehind(rand2);
+//			long rand1 = Math.abs(random.nextLong()) % total_sum;
+//			long rand2 = Math.abs(random.nextLong()) % total_sum;
+//			int rand_idx_1 = indexBehind(rand1);
+//			int rand_idx_2 = indexBehind(rand2);
 			
 			//System.out.println("Chose numbers: "+rand1+" --> "+rand_idx_1+", "+rand2+" --> "+rand_idx_2);
 			
-			Output[] children = merger.merge(outputs.get(rand_idx_1), outputs.get(rand_idx_2));
+			Output[] parents = chooser.choose(this);
+			//Output[] children = merger.merge(outputs.get(rand_idx_1), outputs.get(rand_idx_2));
+			Output[] children = merger.merge(parents[0], parents[1]);
 			
 			gen.add(children[0]);
 			gen.add(children[1]);
@@ -114,7 +129,7 @@ public class Generation implements Iterable<Output> {
 		
 		if(best_persists && !gen.contains(this.getBestOutput())) {
 			gen.outputs.remove(random.nextInt(gen.outputs.size()));
-			Output best = this.getBestOutput().clone();
+			Output best = this.getBestOutput().createChild();
 			gen.add(best);
 		}
 		
